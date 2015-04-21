@@ -55,5 +55,6 @@ for pub_file in input_pubs:
     # join abstracts of the same pub
     text = ''
     for abstract in root.findall('.//AbstractText'):
-        text += abstract.text
+        if abstract.text is not None:
+            text += abstract.text
     do_request(SERVICE, text.encode('utf-8'), pub_file)
