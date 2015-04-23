@@ -11,6 +11,7 @@ import requests
 from os.path import exists
 from os import makedirs
 import re
+from multiprocessing import Pool
 
 
 INPUT_DIR = 'publications/'
@@ -45,11 +46,9 @@ def do_request(service, abstract_text, pub_id):
     except requests.exceptions.RequestException:
         print 'FAIL: ' + output_name
 
-if not exists(OUTPUT_DIR):
-    makedirs(OUTPUT_DIR)
 
-input_pubs = get_files_from_dir(INPUT_DIR)
-for pub_file in input_pubs:
+def process(pub_file):
+    # print "processing %d of %d" % (i, len(input_pubs))
     tree = ET.parse(pub_file)
     root = tree.getroot()
     # join abstracts of the same pub
@@ -58,3 +57,14 @@ for pub_file in input_pubs:
         if abstract.text is not None:
             text += abstract.text
     do_request(SERVICE, text.encode('utf-8'), pub_file)
+
+if __name__ == '__main__':
+
+    if not exists(OUTPUT_DIR):
+        makedirs(OUTPUT_DIR)
+
+    input_pubs = get_files_from_dir(INPUT_DIR)
+
+    p = Pool(8)
+    p.map(process, input_pubs)
+
