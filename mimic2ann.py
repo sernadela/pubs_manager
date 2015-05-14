@@ -37,7 +37,7 @@ def do_request(service, abstract_text, pub_id):
 
 
 def process(text):
-    do_request(SERVICE, text[0].encode('utf-8'), str(uuid.uuid4()))
+    do_request(SERVICE, text[0].encode('utf-8'), str(uuid.uuid4().int))
 
 if __name__ == '__main__':
 
@@ -47,7 +47,7 @@ if __name__ == '__main__':
         print "Connecting to database\n	->%s" % (DB)
         conn = psycopg2.connect(DB)
         cursor = conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
-        cursor.execute("select text from mimic2v26.noteevents where category='RADIOLOGY_REPORT' AND charttime >= '3560-02-27 00:00:00.0'")
+        cursor.execute("select text from mimic2v26.noteevents where category='RADIOLOGY_REPORT' AND charttime >= '3460-02-27 00:00:00.0'")
         records = cursor.fetchall()
 
         print "Getting annotations.."
